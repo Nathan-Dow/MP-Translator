@@ -1,13 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "function_prototypes.h"
 
 
 //TBR => to be resolved
 
-void initializeDatabase(entry *wordDatabase){
+void RemoveNewline(char *string){
+	string[strcspn(string, "\n")] = '\0';
+}
+
+void InitializeDatabase(entry *wordDatabase){
 	int i;
 	
 	for (i = 0; i < DATABASE_SIZE; i++){
@@ -15,32 +16,52 @@ void initializeDatabase(entry *wordDatabase){
 	}
 }
 
+void DisplaySpecificEntries(entry *wordDatabase, int *displayArray, int displayArrayElements){
+	int i, j;
+	//TBR: This does not display inta-entry nor inter-entry
+	for (i = 0; i < displayArrayElements; i++){
+		printf("---[Item %d]\n", i+1);
+		for (j = 0; j < wordDatabase[displayArray[i]].pairCount; j++){
+			printf("Translation: %s\n", wordDatabase[displayArray[i]].pairs[j][0]);
+			printf("Word: %s\n", wordDatabase[displayArray[i]].pairs[j][1]);
+		}
+		printf("---\n");
+	}
+};
+
 void AddEntry(int *entryCount, entry *wordDatabase){
+	//To remove line below in the future
 	printf("The value of entry count is %d\n", *entryCount);
 	string20 translation,
 			 word;
-	char response[YES_NO];
+	char response[RESPONSE_SIZE];
 	int sentinel = 1;
-	
+	//TBR: Maybe this could be a struct
+	int displayArray[DATABASE_SIZE];
+	int displayArrayElements = 0;
 
 	
 	do {
+		displayArrayElements = 0;
 		getchar();
 		printf("Indicate desired translation: ");
 		fgets(translation, sizeof(translation), stdin);
+		RemoveNewline(translation);
 		
 		printf("Indicate desired word: ");
-		fgets(word, sizeof(translation), stdin);
+		fgets(word, sizeof(word), stdin);
+		RemoveNewline(word);
 	
-		if (searchTranslation(word, translation, wordDatabase, entryCount)){
-			printf("Word found");
-		} else {
-			printf("Word is not found\n");
+		if (SearchTranslation(word, translation, wordDatabase, entryCount, displayArray, &displayArrayElements)){
+			printf("Word found\n");
+			DisplaySpecificEntries(wordDatabase, displayArray, displayArrayElements);
+			
 			printf("Is this a new entry? ");
 			scanf("%s", response);
 			
 			if (strcmp(response, "yes") == 0){
-				inputEntryData(word, translation, wordDatabase, entryCount);
+				InputEntryData(word, translation, wordDatabase, entryCount, -1);
+				printf("New entry successfully created\n");
 				printf("Do you want to input another language translation pair?\n");
 				scanf("%s", response);
 				
@@ -48,61 +69,178 @@ void AddEntry(int *entryCount, entry *wordDatabase){
 					sentinel = 0;
 					ManageDataMenu(entryCount, wordDatabase);
 				}
-					
-					
-					
+						
+			} else if (strcmp(response, "no") == 0){
+				sentinel = 0;
+				ManageDataMenu(entryCount, wordDatabase);
+			}
+			
+		} else {
+			printf("Word is not found\n");
+			printf("Is this a new entry? ");
+			scanf("%s", response);
+			
+			if (strcmp(response, "yes") == 0){
+				InputEntryData(word, translation, wordDatabase, entryCount, -1);
+				printf("Do you want to input another language translation pair?\n");
+				scanf("%s", response);
+				
+				if (strcmp(response, "no") == 0){
+					sentinel = 0;
+					ManageDataMenu(entryCount, wordDatabase);
+				}
+						
 			} else if (strcmp(response, "no") == 0){
 				sentinel = 0;
 				ManageDataMenu(entryCount, wordDatabase);
 			}
 		}
 	} while (sentinel == 1);
-	
-	
-	//findInDatabase => searchTranslation(translation) && searchWord(word)
-
-	/*
-	if (findInDatabase(translation, word){
-		for (all entries which were found){
-			displayEntry();
-		}
-		printf("Is this a new entry?")
-		fgets(response, sizeof(response), stdin);
-
-		if (response == "YES"){
-			
-		} else if (response == "NO"){
-		 	ManageDataMenu();
-		}
-	}
-	*/
-
-    /*
-    Asks language and translation pair
-    
-    */
 }
 
-void inputEntryData(char *word, char *translation, entry *wordDatabase, int *entryCount){
+void InputEntryData(char *word, char *translation, entry *wordDatabase, int *entryCount, int mode){
 	// TBR: what if all entries are taken?
 	int i;
-	for (i = 0; i < *entryCount; i++){
-		if (wordDatabase[i].pairCount == 0){
-			*entryCount += 1;
-			strcpy(wordDatabase[i].pairs[0][0], translation);
-			strcpy(wordDatabase[i].pairs[0][1], word);
-			wordDatabase[i].pairCount+=1;
-			
-			printf("Translation of entry %d: %s\n", i, wordDatabase[i].pairs[0][0]);
-			printf("Word of entry %d: %s\n", i, wordDatabase[i].pairs[0][1]);
-			
-			i = *entryCount;
+
+	if (mode == -1){
+		for (i = 0; i < *entryCount; i++){
+			if (wordDatabase[i].pairCount == 0){
+				*entryCount += 1;
+				strcpy(wordDatabase[i].pairs[0][0], translation);
+				strcpy(wordDatabase[i].pairs[0][1], word);
+				wordDatabase[i].pairCount+=1;
+				i = *entryCount;
+			}
 		}
+	} else {
+		strcpy(wordDatabase[mode].pairs[wordDatabase[mode].pairCount][0], translation);
+		strcpy(wordDatabase[mode].pairs[wordDatabase[mode].pairCount][1], word);
+		wordDatabase[mode].pairCount+=1;
 	}
+	
 };
 
-void AddTranslations(){
+void AddTranslations(int *entryCount, entry *wordDatabase){
+	//To remove line below in the future
+	string20 queryTranslation,
+			 queryWord,
+			 translation,
+			 word;
+	char response[RESPONSE_SIZE];
+	
+	int confirmation;
+	int sentinel = 1;
+	//TBR: Maybe this could be a struct
+	int displayArray[DATABASE_SIZE];
+	int displayArrayElements = 0;
+	int translationID;
+	
+	displayArrayElements = 0;
+	getchar();
+	printf("Indicate desired translation: ");
+	fgets(queryTranslation, sizeof(queryTranslation), stdin);
+	RemoveNewline(queryTranslation);
+	
+	printf("Indicate desired word: ");
+	fgets(queryWord, sizeof(queryWord), stdin);
+	RemoveNewline(queryWord);
 
+	if (SearchTranslation(queryWord, queryTranslation, wordDatabase, entryCount, displayArray, &displayArrayElements)){
+		
+		if (displayArrayElements > 1){
+			DisplaySpecificEntries(wordDatabase, displayArray, displayArrayElements);
+			printf("Language - Translation pairs have been found\n");
+
+			printf("Please indicate which entry will be added translations\n");
+			scanf("%d", &translationID);
+
+			if (wordDatabase[displayArray[translationID-1]].pairCount == 10){
+				printf("[Entry Capacity Reached] No additional translation pairs can be added to this entry\n");
+				ManageDataMenu(entryCount, wordDatabase);
+			} else {
+				while (sentinel == 1){
+					getchar();
+					printf("Indicate language to be added: ");
+					fgets(translation, sizeof(translation), stdin);
+					RemoveNewline(translation);
+					
+					printf("Indicate word translation to be added: ");
+					fgets(word, sizeof(word), stdin);
+					RemoveNewline(word);
+					
+					InputEntryData(word, translation, wordDatabase, entryCount, displayArray[translationID-1]);
+	
+					printf("Successfully added to entry\n");
+	
+					if (wordDatabase[displayArray[0]].pairCount == 10){
+						printf("[Entry Capacity Reached] No additional translation pairs can be added to this entry\n");
+						sentinel = 0;
+					}
+					printf("Would you like to add more translations to the same entry?\n");
+					scanf("%s", response);
+	
+					if (strcmp(response, "no") == 0){
+						sentinel = 0;
+						ManageDataMenu(entryCount, wordDatabase);
+					}
+				}
+			}
+			
+		} else if (displayArrayElements == 1){
+			DisplaySpecificEntries(wordDatabase, displayArray, displayArrayElements);
+			printf("A Language - Translation pair has been found\n");
+
+			if (wordDatabase[displayArray[0]].pairCount == 10){
+				printf("[Entry Capacity Reached] No additional translation pairs can be added to this entry\n");
+				ManageDataMenu(entryCount, wordDatabase);
+			} else {
+				while (sentinel == 1){
+					getchar();
+					printf("Indicate language to be added: ");
+					fgets(translation, sizeof(translation), stdin);
+					RemoveNewline(translation);
+					
+					printf("Indicate word translation to be added: ");
+					fgets(word, sizeof(word), stdin);
+					RemoveNewline(word);
+					
+					InputEntryData(word, translation, wordDatabase, entryCount, displayArray[0]);
+	
+					printf("Successfully added to entry\n");
+	
+					if (wordDatabase[displayArray[0]].pairCount == 10){
+						printf("[Entry Capacity Reached] No additional translation pairs can be added to this entry\n");
+						sentinel = 0;
+					}
+					printf("Would you like to add more translations to the same entry?\n");
+					scanf("%s", response);
+	
+	
+					if (strcmp(response, "no") == 0){
+						sentinel = 0;
+						ManageDataMenu(entryCount, wordDatabase);
+					}
+				}
+			}
+			
+		}
+		
+	} else {
+		printf("Word is not found\n");
+		printf("Please return to the Manage Data menu and use the Add Entry option\n");
+	
+		while (confirmation != 1){
+			printf("Input 1 if understood\n");
+			scanf("%d", &confirmation);
+			
+			if (confirmation == 1){
+				ManageDataMenu(entryCount, wordDatabase);
+			} else {
+				printf("Unrecognized command, please re-input\n");
+			}
+		}
+		
+	}
 }
 
 void DeleteEntry(){
@@ -121,13 +259,18 @@ void SearchWord(char word, struct entryTag wordDatabase){
 	//
 }
 
-int searchTranslation(char *word, char *translation, entry *wordDatabase, int *entryCount){
+int SearchTranslation(char *word, char *translation, entry *wordDatabase, int *entryCount, int *displayArray, int *displayArrayElements){
 	int i, j, found = 0;
+	int displayIndex = 0;
 	
 	for (i = 0; i < *entryCount; i++){
 		for (j = 0; j < wordDatabase[i].pairCount; j++){
+				
 			if (strcmp(wordDatabase[i].pairs[j][0], translation) == 0 && strcmp(wordDatabase[i].pairs[j][1], word) == 0){
 				found = 1; 
+				displayArray[displayIndex] = i;
+				*displayArrayElements += 1;
+				displayIndex += 1;
 				// print entry...
 			}
 				
@@ -177,7 +320,7 @@ void ManageDataMenu(int *entryCount, entry *wordDatabase){
     		AddEntry(entryCount, wordDatabase);
     		break;
     	case 2: 
-    		// AddTranslations();
+    		AddTranslations(entryCount, wordDatabase);
     		break;
     	case 3:
     		// DeleteEntry();
@@ -273,15 +416,27 @@ void MainMenu(int *entryCount, entry *wordDatabase){
 
 int main(){
 	int entryCount = 10;
+	
+	int temp;
 	entry wordDatabase[DATABASE_SIZE];	
 		
-	initializeDatabase(wordDatabase);
+	InitializeDatabase(wordDatabase);
 	
 	strcpy(wordDatabase[0].pairs[0][0], "english");
 	strcpy(wordDatabase[0].pairs[0][1], "love");
 	strcpy(wordDatabase[0].pairs[1][0], "tagalog");
 	strcpy(wordDatabase[0].pairs[1][1], "mahal");
 	wordDatabase[0].pairCount = 2;
+	
+	strcpy(wordDatabase[1].pairs[0][0], "tagalog");
+	strcpy(wordDatabase[1].pairs[0][1], "mahal");
+	strcpy(wordDatabase[1].pairs[1][0], "kapampangan");
+	strcpy(wordDatabase[1].pairs[1][1], "mal");
+	wordDatabase[1].pairCount = 2;
+	
+	//TBR: Line below to be removed in the future
+	printf("Word DB pair count: %d", wordDatabase[0].pairCount);
+	scanf("%d", &temp);
     MainMenu(&entryCount, wordDatabase);
     
     
