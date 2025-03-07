@@ -14,6 +14,16 @@ typedef struct entryTag{
 	int pairCount;
 } entry;
 
+typedef struct englishEntryTag{
+	string20 pairs[10][2];
+	int pairCount;
+	int englishWordInEntryIndex;
+
+} englishEntry;
+
+void swapEntries(entry *entry1, entry *entry2);
+void SortDatabase(int DbEntries, entry *wordDatabase);
+void DisplayAllEntries(int *entryCount, entry *wordDatabase, int mode);
 void DisplaySpecificEntries(entry *wordDatabase, int *displayArray, int displayArrayElements);
 int SearchTranslation(char *word, char *translation, entry *wordDatabase, int *entryCount, int *displayArray, int *displayArrayElements);
 void RemoveNewline(char *string);
