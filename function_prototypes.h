@@ -3,11 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define STRING_LEN20 21
 #define DATABASE_SIZE 150
 #define RESPONSE_SIZE 4
 
-typedef char string20[STRING_LEN20];
+typedef char string20[21];
+typedef char string30[31];
 
 typedef struct entryTag{
 	string20 pairs[10][2];
