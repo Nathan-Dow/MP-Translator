@@ -14,12 +14,6 @@ typedef struct entryTag{
 	int pairCount;
 } entry;
 
-typedef struct englishEntryTag{
-	string20 pairs[10][2];
-	int pairCount;
-	int englishWordInEntryIndex;
-
-} englishEntry;
 
 void swapEntries(entry *entry1, entry *entry2);
 void SortDatabase(int DbEntries, entry *wordDatabase);
