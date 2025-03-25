@@ -8,6 +8,7 @@
 
 typedef char string20[21];
 typedef char string30[31];
+typedef char string150[151];
 
 typedef struct entryTag{
 	string20 pairs[10][2];
@@ -23,4 +24,5 @@ int SearchTranslation(char *word, char *translation, entry *wordDatabase, int *e
 void RemoveNewline(char *string);
 void InputEntryData(char *word, char *translation, entry *wordDatabase, int *entryCount, int pairNumber);
 void ManageDataMenu(int *entryCount, entry *wordDatabase);
+void TranslateMenu(int *entryCount, entry* wordDatabase);
 void MainMenu(int *entryCount, entry *wordDatabase);

@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.ejs": "html",
+        "function_prototypes.h": "c"
+    }
+}

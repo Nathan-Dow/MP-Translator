@@ -10,3 +10,12 @@ tagalog: mahal
 
 tagalog: kamusta
 mandarin: ni hao
+
+english: happy
+tagalog: masaya
+
+english: hot
+tagalog: mainit
+
+english: dog
+tagalog: aso
