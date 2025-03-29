@@ -1,25 +1,44 @@
 
 #include "function_prototypes.h"
 
+/*********************************************************************************************************
+This is to certify that this project is our own work, based on our personal efforts in studying and applying the concepts
+learned. We have constructed the functions and their respective algorithms and corresponding code by ourselves. The
+program was run, tested, and debugged by our own efforts. We further certify that we have not copied in part or whole or
+otherwise plagiarized the work of other students and/or persons.
+<Nathan Gabriel D. Dolot, Franz Patrick Magbitang>, DLSU ID# <12410195, ..., respectively>
+*********************************************************************************************************/
 
-//Helper Functions
-void RemoveNewline(char *string)
+/*
+RemoveNewLine function modifies the input string such that it removes the newline escape character
+@param string - string containing only 1 word
+@return N/A
+Pre-condition: None
+*/
+void 
+RemoveNewline(char *string)
 {
 	string[strcspn(string, "\n")] = '\0';
 }
 
-/*  Function Name: clearInputBuffer()
-**  Function Description: This function clears the input buffer by reading the buffer characters until the end and discards them
-**  Precondition: None
-**  Note: As this is just to prevent the program from breaking when entering the wrong input type,
-**        it is best to treat this function as if it doesn't exist and avoid using the wrong input types (e.g. string input on int)
+/* clearInputBuffer function clears the input buffer by reading the buffer characters until the end and discards them
+@return - N/A
+Pre-condition: None
+Note: As this is just to prevent the program from breaking when entering the wrong input type, it is best to treat this function as if it doesn't exist and avoid using the wrong input types (e.g. string input on int)
 */
-
-void clearInputBuffer() {
+void 
+clearInputBuffer() 
+{
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
+/* inputString function handles string input and input errors
+@param str - address where the string input is assigned to
+@param size - size of the string input
+@return - N/A
+Pre-condition: None
+*/
 void 
 inputString(char* str, int size)
 {
@@ -39,14 +58,15 @@ inputString(char* str, int size)
 	} while(!valid);
 }
 
-/*  Function Name: intInput()
-**  Function Description: This function is used for the various inputs that will be done by the user
-**  Precondition: The input is an integer and high's value is not lower than low
-**  @param <low>     : lowest value that *choice is allowed to be
-**  @param <high>    : highest value that *choice is allowed to be
-**  @return          : the choice of the user, if valid
+/* intInput function is used for various integer inputs that will be done by the user
+@param low - lowest value that choice is allowed to be
+@param high - highest value that choice is allowed to be
+@return - value of choice, if valid
+@Pre-condition: The input is an integer and high's value is now lower than low
 */
-int intInput(int low, int high) {
+int 
+intInput(int low, int high) 
+{
     int choice;
     char buffer[50]; // Buffer to store user input as a string
     int validInput = 0; // Flag to check if input is valid
@@ -75,12 +95,11 @@ int intInput(int low, int high) {
     return choice;
 }
 
-/*  Function Name: inputYesNo()
-**  Function Description: This function is used for the various yes or no inputs that will be done by the user
-**  Precondition: The input is a singular character
-**  @param <*decision>  : set to an arbitrary value that is not 0 or 1 (-999 chosen) when the function is called
+/* inputYesNo function is used for various yes or no inputs that will be done by the user
+@param decision - address where the corresponding value of the yes/no input will be stored
+@return - N/A
+Pre-condition: The input is a singular string
 */
-
 void
 inputYesNo(int *decision)
 {
@@ -107,7 +126,13 @@ inputYesNo(int *decision)
 	} while(*decision != 1 && *decision != 0);
 }
 
-void toLowerCase(char *string)
+/* toLowercase function sets the input string to all lowercase
+@param string - original string to be modified
+@return - N/A
+Pre-condition: Characters in the input string are all from the english alphabet
+*/
+void 
+toLowerCase(char *string)
 {
 	int i;
 
@@ -118,7 +143,8 @@ void toLowerCase(char *string)
 	}
 }
 
-void tokenizeString(char* str, string150* strArr)
+void 
+tokenizeString(char* str, string150* strArr)
 {
 	char word[151];
 	int i, j=0, k=0; //i: index of the string input, j: index of word, k: index of string array
@@ -158,7 +184,14 @@ void tokenizeString(char* str, string150* strArr)
 	}
 }
 
-void InitializeDatabase(entry *wordDatabase){
+/* InitializeDatabase function removes all content from the database
+@param wordDatabase - address where the all data is stored
+@return - N/A
+Pre-condition: The function is called to initialize the database and to wipe the database of data
+*/
+void 
+InitializeDatabase(int *entryCount, entry *wordDatabase)
+	{
 	int i, j;
 	for (i = 0; i < DATABASE_SIZE; i++)
 	{
@@ -170,9 +203,20 @@ void InitializeDatabase(entry *wordDatabase){
 		}
 		wordDatabase[i].pairCount = 0;
 	}
+
+	*entryCount = 0;
 }
 
-void DisplaySpecificEntries(entry *wordDatabase, int *FoundEntryArray, int FoundEntryArrayElements){
+/* DisplaySpecificEntries function displays entries inside of a word database
+@param wordDatabase - serves as the source of data
+@param FoundEntryArray - address where indexes of matched certain entries inside of the word database is stored
+@param FoundEntryArrayElements - number of elements in the foundEntryArray
+@return - N/A
+Pre-condition: FoundEntryArray has valid indexes inside. FoundEntryArrayElements should match the number of elements in FoundEntryArray
+*/
+void 
+DisplaySpecificEntries(entry *wordDatabase, int *FoundEntryArray, int FoundEntryArrayElements)
+	{
 	int i, j;
 	//TBR: This does not display inta-entry nor inter-entry
 	for (i = 0; i < FoundEntryArrayElements; i++)
@@ -191,7 +235,14 @@ void DisplaySpecificEntries(entry *wordDatabase, int *FoundEntryArray, int Found
 	}
 };
 
-void AddEntry(int *entryCount, entry *wordDatabase)
+/* AddEntry function is responsible for handling requests to add entries into the word database
+@param entryCount - integer value that represents the current number of entries inside wordDatabase
+@param wordDatabase - serves as the source & destination of entries
+@return - N/A
+Pre-condition: wordDatabase must be properly initialized, entryCount should properly correspond to the current number of entries isnide of wordDatabase
+*/
+void 
+AddEntry(int *entryCount, entry *wordDatabase)
 {
 	string20 translation,
 			 word;
@@ -343,22 +394,29 @@ void AddEntry(int *entryCount, entry *wordDatabase)
 	} while (sentinel == 1);
 }
 
-void InputEntryData(char *word, char *translation, entry *wordDatabase, int *entryCount, int mode)
+/* InputEntryData function is reponsible for creating new entries and adding translations to existing entries
+@param word - the word that will be inserted into the word database
+@param word - the language of the word that will be inserted into the word database
+@param wordDatabase - serves as the destination of new entries and entry modifications
+@param entryCount - corresponds to the number of entries inside of wordDatabase
+@param mode - indicates what action the function will do
+@return - N/A
+*/
+void 
+InputEntryData(char *word, char *language, entry *wordDatabase, int *entryCount, int mode)
 {
-	// TBR: what if all entries are taken?
-	
 	//mode = -1 : to add a new entry
 	//mode != -1 : to add a new translation to an existing entry
 	if (mode == -1)
 	{
-		strcpy(wordDatabase[*entryCount].pairs[0][0], translation);
+		strcpy(wordDatabase[*entryCount].pairs[0][0], language);
 		strcpy(wordDatabase[*entryCount].pairs[0][1], word);
 		wordDatabase[*entryCount].pairCount = 1;
 		*entryCount += 1;
 	
 	} else 
 	{
-		strcpy(wordDatabase[mode].pairs[wordDatabase[mode].pairCount][0], translation);
+		strcpy(wordDatabase[mode].pairs[wordDatabase[mode].pairCount][0], language);
 		strcpy(wordDatabase[mode].pairs[wordDatabase[mode].pairCount][1], word);
 		wordDatabase[mode].pairCount+=1;
 		
@@ -366,7 +424,13 @@ void InputEntryData(char *word, char *translation, entry *wordDatabase, int *ent
 	
 };
 
-void AddTranslations(int *entryCount, entry *wordDatabase)
+/* AddTranslations function is responsible for handling requests to add translations to existing entries in the wordDatabase
+@param entryCount - integer value that represents the current number of entries inside wordDatabase
+@param wordDatabase - serves as the source and destination of entries
+@return - N/A
+*/
+void 
+AddTranslations(int *entryCount, entry *wordDatabase)
 {
 	//To remove line below in the future
 	string20 queryTranslation,
@@ -512,7 +576,14 @@ void AddTranslations(int *entryCount, entry *wordDatabase)
 	}
 }
 
-void DeleteEntry(int *entryCount, entry *wordDatabase)
+/* DeleteEntry function is responsible for handling entry deletion requests
+@param entryCount - integer value that represents the current number of entries inside wordDatabase
+@param wordDatabase - serves as the data source to be modified
+@return - N/A
+Pre-condition: 
+*/
+void 
+DeleteEntry(int *entryCount, entry *wordDatabase)
 {
 	int deleteID, i, j;
 
@@ -549,7 +620,14 @@ void DeleteEntry(int *entryCount, entry *wordDatabase)
 	
 }
 
-void DeleteTranslation(int *entryCount, entry *wordDatabase)
+/* DeleteTranslation function is responsible for handing translation deletion requests
+@param entryCount - integer value that represents the current number of entries inside wordDatabase
+@param wordDatabase - serves as the data source to be modified
+@return - N/A
+Pre-condition: 
+*/
+void 
+DeleteTranslation(int *entryCount, entry *wordDatabase)
 {
     int i, entryID, translationID, sentinel = 1;
 	char response;
@@ -634,7 +712,15 @@ void DeleteTranslation(int *entryCount, entry *wordDatabase)
 
 }
 
-void DisplayAllEntries(int *entryCount, entry *wordDatabase, int mode)
+/* DisplayAllEntries function is responsible for displaying all entries inside of the wordDatabase
+@param entryCount - integer value that represents the current number of entries inside wordDatabase
+@param wordDatabase - serves as the data source
+@param mode - this integer value will indicate if the function will return to ManageDataMenu function or not
+@return - N/A
+Pre-condition:
+*/
+void 
+DisplayAllEntries(int *entryCount, entry *wordDatabase, int mode)
 {
 	//mode = 1 would return to ManageDataMenu()
 	//mode = -1 would be for delete entry/delete translation
@@ -710,7 +796,14 @@ void DisplayAllEntries(int *entryCount, entry *wordDatabase, int mode)
 	
 }
 
-void SearchWord_With_Display(int *entryCount, entry *wordDatabase)
+/* SearchWord_With_Display function is responsible to display entries in the wordDatabase with specific words
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+@return - N/A
+Pre-condition: 
+*/
+void 
+SearchWord_With_Display(int *entryCount, entry *wordDatabase)
 {
 	SortDatabase(*entryCount, wordDatabase);
 	int i = 0, j, k, sentinel = 1;
@@ -819,7 +912,12 @@ void SearchWord_With_Display(int *entryCount, entry *wordDatabase)
 	
 }
 
-void SearchTranslation_With_Display(int *entryCount, entry *wordDatabase)
+/* SearchTranslation_With_Display function is responsible to display entries in wordDatabase with specific language-translation pairs
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+*/
+void 
+SearchTranslation_With_Display(int *entryCount, entry *wordDatabase)
 {
 	SortDatabase(*entryCount, wordDatabase);
 	int i = 0, j, sentinel = 1;
@@ -924,7 +1022,19 @@ void SearchTranslation_With_Display(int *entryCount, entry *wordDatabase)
 	}
 }
 
-int SearchTranslation(char *word, char *translation, entry *wordDatabase, int *entryCount, int *FoundEntryArray, int *FoundEntryArrayElements){
+/* SearchTranslation function is responsbile to search through the word database and record indexes where the language-translation pair is found
+@param word - string that represents the translation from the language-translation pair
+@param language - string that represents the language from the language-translation pair
+@param wordDatabse - address that serves as the data source
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param FoundEntryArray - address that stores the indexes where the language-translation pair is found
+@param FoundEntryArrayElements - integer value that represents the current number of elements in FoundEntryArray
+@return - function returns 0[not found] or 1[found], indicating if the language-translation pair was found in wordDatabase
+Pre-condition: 
+*/
+int 
+SearchTranslation(char *word, char *language, entry *wordDatabase, int *entryCount, int *FoundEntryArray, int *FoundEntryArrayElements)
+{
 	int i, j, found = 0;
 	int displayIndex = 0;
 	
@@ -932,7 +1042,7 @@ int SearchTranslation(char *word, char *translation, entry *wordDatabase, int *e
 	{
 		for (j = 0; j < wordDatabase[i].pairCount; j++)
 		{
-			if (strcmp(wordDatabase[i].pairs[j][0], translation) == 0 && strcmp(wordDatabase[i].pairs[j][1], word) == 0)
+			if (strcmp(wordDatabase[i].pairs[j][0], language) == 0 && strcmp(wordDatabase[i].pairs[j][1], word) == 0)
 			{
 				found = 1; 
 				FoundEntryArray[displayIndex] = i;
@@ -945,7 +1055,14 @@ int SearchTranslation(char *word, char *translation, entry *wordDatabase, int *e
 	return found;
 }
 
-void Export(int *entryCount, entry *wordDatabase)
+/* Export function is responsible for exporting the current database contents into a text file following a proper format
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+@return - N/A
+Pre-condition: 
+*/
+void 
+Export(int *entryCount, entry *wordDatabase)
 {
 	int i, j;
 	FILE* fPtr;
@@ -979,7 +1096,15 @@ void Export(int *entryCount, entry *wordDatabase)
 	printf("Export has been successful\n");
 }
 
-void Import(int *entryCount, entry *wordDatabase, int condition)
+/* Import function is responsible for importing data from a text file that follows prescribed format
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+@param condition -
+@return - N/A
+Pre-condition:
+*/
+void 
+Import(int *entryCount, entry *wordDatabase, int condition)
 {
 	int i, j, response;
 	FILE* fPtr;
@@ -994,7 +1119,7 @@ void Import(int *entryCount, entry *wordDatabase, int condition)
 
 	int line = 0, dataAdded = 0, decision = 1;
 
-	InitializeDatabase(tempEntryDB);
+	InitializeDatabase(&tempEntryCount, tempEntryDB);
 	
 	printf("Indicate file to import data from: [Include .txt]");
 	inputString(filename, 30);
@@ -1065,7 +1190,6 @@ void Import(int *entryCount, entry *wordDatabase, int condition)
 			printf("%-25s | %20s\n", "Language", "Translation");
 			printf("------------------------------------------------\n");
 
-			//TBR: This could be a separate function
 			//copiesArray[i] would be the index of the found in wordDatabase
 			
 			//this should access the number of pairs inside of the current index in wordDatabase
@@ -1097,11 +1221,7 @@ void Import(int *entryCount, entry *wordDatabase, int condition)
 				//need to differ response when there are no more entries to add
 				printf("Viewing next entry in source file\n");
 			} //else 
-			// {
-			// 	printf("Input is: [%c]\n", response);
-			// 	//need to differ response when there are no more entries to add
-			// 	printf("Improper input, displaying next entry in source file\n");
-			// }
+		
 		
 		}
 		
@@ -1136,7 +1256,9 @@ void Import(int *entryCount, entry *wordDatabase, int condition)
 	}
 }
 
-void translate(string150 text, string20 srcLanguage, string20 finLanguage, string150* strArr, int *entryCount, entry *wordDatabase)
+
+void 
+translate(string150 text, string20 srcLanguage, string20 finLanguage, string150* strArr, int *entryCount, entry *wordDatabase)
 {
 	int i, j, k, l;
 	
@@ -1173,7 +1295,8 @@ void translate(string150 text, string20 srcLanguage, string20 finLanguage, strin
 
 }
 
-void TranslateTextInput(int *entryCount, entry *wordDatabase)
+void 
+TranslateTextInput(int *entryCount, entry *wordDatabase)
 {
 	
 	string20 srcLanguage; //source language
@@ -1207,7 +1330,8 @@ void TranslateTextInput(int *entryCount, entry *wordDatabase)
 	
 }
 
-void TranslateTextFile(int *entryCount, entry *wordDatabase)
+void 
+TranslateTextFile(int *entryCount, entry *wordDatabase)
 {
 	//
 	string20 srcLanguage; //source language
@@ -1304,7 +1428,14 @@ void TranslateTextFile(int *entryCount, entry *wordDatabase)
 	
 }
 
-void ManageDataMenu(int *entryCount, entry *wordDatabase)
+/* ManageDataMenu function is responsible for displaying the Manage Data menu & handling operations within the menu
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+@return - N/A
+Pre-condition:
+*/
+void 
+ManageDataMenu(int *entryCount, entry *wordDatabase)
 {
 	
 	int action;
@@ -1353,13 +1484,21 @@ void ManageDataMenu(int *entryCount, entry *wordDatabase)
     		Import(entryCount, wordDatabase, 1);
     		break;
     	default:
+			InitializeDatabase(entryCount, wordDatabase);
     		MainMenu(entryCount, wordDatabase);
     		break;
 	}
 
 }
 
-void TranslateMenu(int *entryCount, entry* wordDatabase)
+/* TranslateMenu function is responsible for displaying the Translate menu & handing operations within the menu
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+@return - N/A
+Pre-condition:
+*/
+void 
+TranslateMenu(int *entryCount, entry* wordDatabase)
 {
 	Import(entryCount, wordDatabase, 0);
 	int action = 1;
@@ -1381,13 +1520,22 @@ void TranslateMenu(int *entryCount, entry* wordDatabase)
 				TranslateTextFile(entryCount, wordDatabase);
 				break;
 			default:
+				InitializeDatabase(entryCount, wordDatabase);
 				MainMenu(entryCount, wordDatabase);
 				break;
 		}	
 	}
 }
 
-void SortDatabase(int DbEntries, entry *wordDatabase)
+
+/* SortDatabase function is responsible for sorting the current word database inter-entry and intra-entry
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+@return - N/A
+Pre-condition: 
+*/
+void 
+SortDatabase(int entryCount, entry *wordDatabase)
 {
 	int i = 0, j, k, l, englishDbIndex = 0, nonEnglishDbIndex = 0, containsEnglish;
 	int englishWordIndex1, englishWordIndex2;
@@ -1400,9 +1548,9 @@ void SortDatabase(int DbEntries, entry *wordDatabase)
 	//Looping 1 - This should place entries with english entries to englishDatabase and entries with no english entries into the nonEnglishDatabase
 
 	//goes through each entry in the database
-	if (DbEntries > 0)
+	if (entryCount > 0)
 	{
-		while (successfulInsertions != DbEntries)
+		while (successfulInsertions != entryCount)
 		{
 			//checks if any of the pairs in the entry contain english
 			containsEnglish = 0;
@@ -1516,7 +1664,7 @@ void SortDatabase(int DbEntries, entry *wordDatabase)
 	
 		//loop will combine the all entries
 	
-		for (i = 0; i < DbEntries; i++)
+		for (i = 0; i < entryCount; i++)
 		{
 			if (i < englishDbIndex)
 			{
@@ -1546,7 +1694,14 @@ void SortDatabase(int DbEntries, entry *wordDatabase)
 
 }
 
-void swapEntries(entry *entry1, entry *entry2) 
+/* swapEntries function is responsible for swapping two entries
+@param entry1 - address that contains the data of an entry
+@param entry2 - address that contains the data of an entry
+@return - N/A
+Pre-condition: 
+*/
+void 
+swapEntries(entry *entry1, entry *entry2) 
 {
     entry tempEntry;
 
@@ -1556,7 +1711,14 @@ void swapEntries(entry *entry1, entry *entry2)
     
 }
 
-void MainMenu(int *entryCount, entry *wordDatabase)
+/* MainMenu function is responsible for displaying the main menu options & handing the operations within the menu
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+@return - N/A
+Pre-condition:
+*/
+void 
+MainMenu(int *entryCount, entry *wordDatabase)
 {
 
 	int action;
@@ -1588,12 +1750,13 @@ void MainMenu(int *entryCount, entry *wordDatabase)
 	}
 }
 
-int main()
+int 
+main()
 {
 	int entryCount = 0;
 	
 	entry wordDatabase[DATABASE_SIZE];	
-	InitializeDatabase(wordDatabase);
+	InitializeDatabase(&entryCount, wordDatabase);
     MainMenu(&entryCount, wordDatabase);
     
     return 0;
