@@ -4,7 +4,6 @@
 #include <string.h>
 
 #define DATABASE_SIZE 150
-#define RESPONSE_SIZE 4
 
 typedef char string20[21];
 typedef char string30[31];
