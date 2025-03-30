@@ -165,8 +165,8 @@ tokenizeString(char* str, string150* strArr)
 			j++;
 		}
 
-		//else if str[i] is a space, separate the tokens by ending word with a null char and copying it to the string array
-		if(str[i] == ' ')
+		//else if str[i] is a space and is not the first character in the word, separate the tokens by ending word with a null char and copying it to the string array
+		if(str[i] == ' ' && j != 0)
 		{
 			word[j] = '\0';
 			j=0;
