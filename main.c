@@ -143,6 +143,11 @@ toLowerCase(char *string)
 	}
 }
 
+/* tokenizeString - this function splits a given string into its component words and assigns the words into a string array
+@param str - the string to be tokenized
+@param strArr - the string array where the words are stored
+Pre-condition: All special characters in <str> will be discarded
+*/
 void 
 tokenizeString(char* str, string150* strArr)
 {
@@ -1256,16 +1261,25 @@ Import(int *entryCount, entry *wordDatabase, int condition)
 	}
 }
 
-
+/* translate - this function is given a string input, a source language, and a final language and translates words that have both language pairs from source to final
+@param text - the string to be tokenized and translated (max 150 characters)
+@param srcLanguage - the source language of the text
+@param finLanguage - the final language of the translated text
+@param strArr - the string array where the tokenized and translated words are stored
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+@return - N/A
+Pre-conditions: None
+*/
 void 
 translate(string150 text, string20 srcLanguage, string20 finLanguage, string150* strArr, int *entryCount, entry *wordDatabase)
 {
 	int i, j, k, l;
-	
+	//tokenize and split text string into word array 
 	tokenizeString(text, strArr); //text is text to be translated, strArr is array of words
-	//for each word sa word array, search translation then translate word if found
+	//for each word in word array, search translation then translate word if found
 	//if word exists in database
-	//if final language exists in the first instance
+	//and if final language exists in the first instance
 	//replace word with translation
 
 	for(i=0; strcmp(strArr[i],"") != 0; i++) //while strArr is not a null string
@@ -1282,6 +1296,7 @@ translate(string150 text, string20 srcLanguage, string20 finLanguage, string150*
 					{
 						if(strcmp(finLanguage, wordDatabase[j].pairs[l][0]) == 0)
 						{
+							//if found, replace the word in the word array with its translation
 							strcpy(strArr[i], wordDatabase[j].pairs[l][1]);
 							
 						}
@@ -1295,6 +1310,11 @@ translate(string150 text, string20 srcLanguage, string20 finLanguage, string150*
 
 }
 
+/* TranslateTextInput - this function asks the user for a text input and the desired source and output languages and calls the function translate() to translate the given input
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+Pre-condition: None
+*/
 void 
 TranslateTextInput(int *entryCount, entry *wordDatabase)
 {
@@ -1305,24 +1325,28 @@ TranslateTextInput(int *entryCount, entry *wordDatabase)
 	string150 strArr[75]; //word array after tokenize
 	int i, condition = 0;
 
+	//input handling
 	printf("Indicate the language of the source text: ");
 	inputString(srcLanguage, 30);
 	
 	printf("Indicate the language to be translated to: ");
 	inputString(finLanguage, 30);
 
-	do
+	do //do while loop if the user wants to translate with the same source and final language
 	{
+		//text input and translate text input
 		printf("Indicate the text to be translated:\n");
 		inputString(text, 150);
 		translate(text, srcLanguage, finLanguage, strArr, entryCount, wordDatabase);
 
+		//translation printing
 		printf("\nTranslation:\n");
 		for(i=0; strcmp(strArr[i], ""); i++)
 		{
 			printf("%s ", strArr[i]);
 		}
 
+		//loop
 		printf("\n\nDo you want to translate again with the same source and output language? [yes/no]\n");
 		inputYesNo(&condition);
 	} while (condition);
@@ -1330,16 +1354,21 @@ TranslateTextInput(int *entryCount, entry *wordDatabase)
 	
 }
 
+/* TranslateTextInput - this function asks the user for a filename and the desired source and output languages as well as the output filename and calls the function translateTextInput() to translate every sentence
+@param entryCount - integer value that represents the current number of entries inside of wordDatabase
+@param wordDatabase - address that serves as the data source
+Pre-condition: None
+*/
 void 
 TranslateTextFile(int *entryCount, entry *wordDatabase)
 {
-	//
+	//initialization
 	string20 srcLanguage; //source language
 	string20 srcFileName; //source FileName
 	string20 outLanguage; //output language
 	string20 outFileName; //output fileName
-	string150 sentence;
-	string150 strArr[75];
+	string150 sentence;   //sentence to be translated
+	string150 strArr[75]; //word array for tokenized sentences
 	FILE* fPtrSource = NULL;
 	FILE* fPtrOutput;
 	int decision = 1, i, toStop = 0;
@@ -1353,8 +1382,10 @@ TranslateTextFile(int *entryCount, entry *wordDatabase)
 		printf("Indicate the filename of your source file: [include .txt] ");
 		inputString(srcFileName, 30);
 
+		//open the file
 		fPtrSource = fopen(srcFileName, "r");
 
+		//if file successfully opened
 		if (fPtrSource != NULL){ 
 			printf("Indicate the language to be translated to: ");
 			inputString(outLanguage, 20);
@@ -1362,25 +1393,26 @@ TranslateTextFile(int *entryCount, entry *wordDatabase)
 			printf("Indicate the filename of your output file: [include .txt] ");
 			inputString(outFileName, 30);
 
+			//open output file for writing
 			fPtrOutput = fopen(outFileName, "w");
 			
 			printf("-----------Start of Translation-----------\n");
-			while ((sym = fgetc(fPtrSource)) != EOF)
+			while ((sym = fgetc(fPtrSource)) != EOF) //while read char is not eof
 			{
-				if(!(sym == '.' || sym == '!' || sym == '?'))
+				if(!(sym == '.' || sym == '!' || sym == '?')) //if sym is not one of 3 punctuations
 				{
-					if(!(i==0 && sym == ' ') && sym != '\n')
+					if(!(i==0 && sym == ' ') && sym != '\n') //and if sym is not a whitespace as the first character of the sentence
 					{
-						sentence[i] = sym;
+						sentence[i] = sym; //add sym to sentence
 						i++;
 					}
 				}
-				else
+				else //if sym is one of the 3 punctuation chars, a sentence is formed
 				{
-					sentence[i] = '\0';
+					sentence[i] = '\0'; //terminate the sentence with a null char, then translate
 					translate(sentence, srcLanguage, outLanguage, strArr, entryCount, wordDatabase);
 
-					
+					//print each word until the end of the sentence
 					for(i=0; strcmp(strArr[i], ""); i++)
 					{
 						if(strcmp(strArr[i+1], ""))
@@ -1394,13 +1426,12 @@ TranslateTextFile(int *entryCount, entry *wordDatabase)
 							fprintf(fPtrOutput, "%s", strArr[i]);
 						}
 					}
-					printf("%c", sym);
-					printf("\n");
-					fprintf(fPtrOutput, "%c", sym);
+					printf("%c", sym); //readd punctuation
+					printf("\n"); //newline
+					fprintf(fPtrOutput, "%c", sym); //same as above but for the file
 					fprintf(fPtrOutput, "\n");
-					
-					//write sa file here
 
+					//empty sentence
 					strcpy(sentence, "");
 					i=0;
 				}
@@ -1409,7 +1440,7 @@ TranslateTextFile(int *entryCount, entry *wordDatabase)
 			fclose(fPtrSource);
 			fclose(fPtrOutput);
 		}
-		else 
+		else //if sourcefile doesnt exist, loop
 		{
 			while(decision)
 			{
