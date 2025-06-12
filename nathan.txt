@@ -1,0 +1,21 @@
+cebuano: mahal
+english: expensive
+kapampangan: mal
+tagalog: mahal
+
+english: love
+hiligaynon: gugma
+spanish: amor
+tagalog: mahal
+
+tagalog: kamusta
+mandarin: ni hao
+
+english: happy
+tagalog: masaya
+
+english: hot
+tagalog: mainit
+
+english: dog
+tagalog: aso
